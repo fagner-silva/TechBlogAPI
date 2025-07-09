@@ -56,5 +56,8 @@ jobs:
           else
             echo "✅ Cobertura aceitável"
           fi
+          
       - name: Run mutation tests
-        run: npx stryker run
+        run: |
+          chmod +x ./node_modules/.bin/stryker
+          npx stryker run
