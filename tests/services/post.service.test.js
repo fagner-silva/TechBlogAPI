@@ -8,6 +8,14 @@ const {
 
 jest.mock('../../src/models/post.model');
 
+beforeAll(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => { });
+});
+
+afterAll(() => {
+    console.error.mockRestore();
+});
+
 describe('Post Service', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -86,30 +94,30 @@ describe('Post Service', () => {
         });
     });
     describe('PostService - deletePost', () => {
-    it('deve deletar um post com sucesso', async () => {
-        const id = '507f191e810c19729de860ea';
+        it('deve deletar um post com sucesso', async () => {
+            const id = '507f191e810c19729de860ea';
 
-        const postDeletadoMock = {
-            _id: id,
-            titulo: 'Post deletado',
-            conteudo: 'Conteúdo',
-            autor: 'Fagner',
-        };
+            const postDeletadoMock = {
+                _id: id,
+                titulo: 'Post deletado',
+                conteudo: 'Conteúdo',
+                autor: 'Fagner',
+            };
 
-        Post.findByIdAndDelete.mockResolvedValue(postDeletadoMock);
+            Post.findByIdAndDelete.mockResolvedValue(postDeletadoMock);
 
-        const resultado = await deletePost(id);
+            const resultado = await deletePost(id);
 
-        expect(Post.findByIdAndDelete).toHaveBeenCalledWith(expect.any(Object));
-        expect(resultado).toEqual(postDeletadoMock);
+            expect(Post.findByIdAndDelete).toHaveBeenCalledWith(expect.any(Object));
+            expect(resultado).toEqual(postDeletadoMock);
+        });
+
+        it('deve lançar erro ao tentar deletar post', async () => {
+            const id = '507f191e810c19729de860ea';
+
+            Post.findByIdAndDelete.mockRejectedValue(new Error('Erro ao deletar'));
+
+            await expect(deletePost(id)).rejects.toThrow('Erro ao deletar');
+        });
     });
-
-    it('deve lançar erro ao tentar deletar post', async () => {
-        const id = '507f191e810c19729de860ea';
-
-        Post.findByIdAndDelete.mockRejectedValue(new Error('Erro ao deletar'));
-
-        await expect(deletePost(id)).rejects.toThrow('Erro ao deletar');
-    });
-});
 });

@@ -27,23 +27,26 @@ jobs:
       JWT_SECRET: fake_secret_test_only
 
     steps:
-      - name: 🔄 Checkout do código
+      - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: 📦 Instalar Node.js
+      - name:  Instalar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: 📥 Instalar dependências
+      - name: Instalar dependências
         run: npm install
 
-      - name: 🧪 Rodar testes com cobertura
+      - name: Garantir permissão de execução para jest
+        run: chmod +x ./node_modules/.bin/jest
+        
+      - name: Rodar testes com cobertura
         run: |
-          npm run test -- --coverage --coverageReporters=text-summary > coverage.txt
+          npx jest --coverage --coverageReporters=text-summary > coverage.txt
           cat coverage.txt
 
-      - name: ✅ Verificar cobertura mínima
+      - name: Verificar cobertura mínima
         run: |
           COVERAGE=$(grep -Po 'All files[^|]*\|\s*\K\d+' coverage.txt | head -1)
           echo "Cobertura total: $COVERAGE%"
