@@ -1,68 +1,158 @@
-Passo 1 - Criar diretorios
-    
-    mkdir -p src/controllers src/routes src/models src/services src/middlewares src/config src/utils tests
+# 📰 TechBlog API
 
-Passo 2 - Criar app.js e index.js
+API RESTful para gerenciamento de postagens em um blog educacional, permitindo que professores criem, editem e excluam posts, e que alunos consultem os conteúdos. Desenvolvido com Node.js, Express e MongoDB.
 
-    touch src/app.js
-    touch index.js
+---
 
-Passo 3 - Inicializar Projeto e Instalar Dependencias 
-    
-    npm init -y
-    npm install express cors dotenv
-    npm install --save-dev jest supertest nodemon eslint
-    npm install --save-dev @stryker-mutator/core
-    npm install swagger-ui-express swagger-jsdoc
-    npm install prom-client
-    npm install bcrypt jsonwebtoken
+## 🚀 Tecnologias Utilizadas
 
-Caso o uso seja DynamoDB
-    
-    npm install @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+- Node.js
+- Express
+- MongoDB (com Mongoose)
+- JWT (autenticação)
+- Swagger (documentação)
+- Docker & Docker Compose
+- GitHub Actions (CI/CD)
+- StrykerJS (testes mutantes)
 
-Caso o uso seja o MongoDB
-    
-    npm install mongoose
+---
 
-Passo 4 - Ajustar script no package.json
-    
-    "scripts": {
-    "dev": "nodemon index.js",
-    "test": "jest",
-    "mutant": "stryker run"
-    }
+## 📁 Estrutura do Projeto
 
-Passo 5 - Para rodar o projeto 
+```
+├── src/
+│   ├── config/
+│   ├── controllers/
+│   ├── metrics/
+│   ├── middlewares/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   └── utils/
+├── tests/
+│   └── services/
+├── .github/workflows/
+├── Dockerfile
+├── docker-compose.yml
+├── render.yaml
+├── prometheus.yml
+├── package.json
+├── README.md
+└── .env
+```
 
-    npm run dev
+---
 
-Criação de arquivo de rotas
+## 🔧 Variáveis de Ambiente
 
-    touch src/routes/post.model.js
+Crie um arquivo `.env` na raiz com o seguinte conteúdo:
 
-Criar arquivo para conectar ao MongoDB 
+```
+PORT=3000
+MONGO_URI_PROD=mongodb+srv://<user>:<password>@cluster.mongodb.net/techblog
+JWT_SECRET=sua_chave_secreta_segura
+```
 
-    touch src/config/database.js
+---
 
-Comando para rodar MongoDB local
+## 🐳 Rodando Localmente com Docker
 
-    net start MongoDB
+1. **Clone o repositório:**
 
-Ou Docker
+```bash
+git clone https://github.com/fagner-silva/TechBlogAPI.git
+cd TechBlogAPI
+```
 
-    docker run --name mongo -p 27017:27017 -d mongo
+2. **Configure o `.env`:**
 
-Comando Docker
+Copie o modelo acima e edite com seus dados.
 
-    docker-compose up -d
+3. **Suba os containers:**
 
-Links uteis
+```bash
+docker-compose up --build
+```
 
-    Acesse sua API: http://localhost:3000/health
+A aplicação estará disponível em: [http://localhost:3000/api](http://localhost:3000/api)
 
-    Verifique o Swagger: http://localhost:3000/api-docs
+---
 
-    Prometheus: http://localhost:9090
+## 🧪 Rodando os Testes
 
-    Grafana: http://localhost:3001
+### Testes unitários:
+
+```bash
+npm test
+```
+
+### Testes mutantes com Stryker:
+
+```bash
+npx stryker run
+```
+
+---
+
+## 📘 Documentação da API (Swagger)
+
+Acesse a documentação interativa em:
+
+```
+http://localhost:3000/api-docs
+```
+
+---
+
+## 🔐 Autenticação e Perfis
+
+A API utiliza autenticação via **JWT**. Para acessar rotas protegidas, envie o token JWT no header:
+
+```
+Authorization: Bearer <seu_token>
+```
+
+Tipos de usuários:
+- **Professor**: pode criar, editar e deletar posts.
+- **Aluno**: pode apenas visualizar posts.
+
+---
+
+## 📊 Observabilidade
+
+O projeto inclui suporte a Prometheus e Grafana para métricas. Para ativar, consulte o arquivo `prometheus.yml` e os serviços no `render.yaml`.
+
+---
+
+## 🔄 CI/CD com GitHub Actions
+
+- **Build** e **Testes** automatizados a cada `push`.
+- Implantação no Render via `render.yaml`.
+
+---
+
+## ✅ Endpoints Principais
+
+| Método | Rota              | Descrição                     |
+|--------|-------------------|-------------------------------|
+| POST   | `/auth/registrar` | Registro de usuários          |
+| POST   | `/auth/login`     | Login e geração de token      |
+| GET    | `/posts`          | Lista todos os posts          |
+| GET    | `/posts/:id`      | Visualiza post por ID         |
+| POST   | `/posts`          | Cria novo post (professor)    |
+| PUT    | `/posts/:id`      | Atualiza post (professor)     |
+| DELETE | `/posts/:id`      | Remove post (professor)       |
+| GET    | `/posts/search`   | Busca posts por termo         |
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por **Fagner Silva**  
+🔗 [github.com/fagner-silva](https://github.com/fagner-silva)
+
+---
+
+## 📄 Licença
+
+MIT
