@@ -1,5 +1,14 @@
 # 📰 TechBlog API
 
+## 🌐 Links de Produção
+
+- 🔗 [TechBlogAPI - Produção](https://techblogapi-m8yz.onrender.com)
+- 📊 [Prometheus - Monitoramento](https://prometheus-6wsl.onrender.com)
+- 📈 [Grafana - Dashboard](https://grafana-i9qg.onrender.com)
+
+---
+
+
 API RESTful para gerenciamento de postagens em um blog educacional, permitindo que professores criem, editem e excluam posts, e que alunos consultem os conteúdos. Desenvolvido com Node.js, Express e MongoDB.
 
 ---
