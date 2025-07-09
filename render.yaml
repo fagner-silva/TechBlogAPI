@@ -6,11 +6,11 @@ services:
     plan: free
     envVars:
       - key: PORT
-        value: 3000
+        value: "3000"
       - key: JWT_SECRET
-        fromSecret: JWT_SECRET
+        value: ${JWT_SECRET}
       - key: MONGO_URI_PROD
-        fromSecret: MONGO_URI_PROD
+        value: ${MONGO_URI_PROD}
 
   - type: web
     name: prometheus
@@ -25,6 +25,6 @@ services:
     plan: free
     envVars:
       - key: GF_SECURITY_ADMIN_USER
-        value: admin
+        value: "admin"
       - key: GF_SECURITY_ADMIN_PASSWORD
-        value: admin
+        value: "admin"
