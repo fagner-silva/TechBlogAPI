@@ -5,4 +5,4 @@ scrape_configs:
   - job_name: 'techblog-api'
     metrics_path: /metrics
     static_configs:
-      - targets: ['https://techblogapi-m8yz.onrender.com/']
+      - targets: [techblogapi.onrender.com']
