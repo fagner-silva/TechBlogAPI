@@ -1,0 +1,38 @@
+### GET - Listar todos os posts
+GET http://localhost:3000/api/posts
+Content-Type: application/json
+
+###
+
+### POST - Criar um novo post
+POST http://localhost:3000/api/posts
+Content-Type: application/json
+
+{
+  "titulo": "Post via REST Client 2",
+  "conteudo": "Testando criação com REST Client no VSCode",
+  "autor": "Fagner"
+}
+
+###
+
+### PUT - Atualizar um post
+PUT http://localhost:3000/api/posts/685de4df4eb2844d67a85e9a
+Content-Type: application/json
+
+{
+  "titulo": "Post Atualizado",
+  "conteudo": "Conteúdo atualizado com sucesso"
+}
+
+###
+
+### DELETE - Deletar um post
+DELETE http://localhost:3000/api/posts/685df85d9dbf484cf41f5f58
+
+###
+
+### Search - buscar um post por termo
+GET http://localhost:3000/api/posts/search?query=Sucesso
+
+###

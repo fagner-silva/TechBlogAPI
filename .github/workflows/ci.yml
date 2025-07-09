@@ -1,0 +1,55 @@
+name: Run Tests (CI)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.adminCommand(\"ping\")'" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
+    env:
+      PORT: 3000
+      MONGO_URI_DOCKER: mongodb://localhost:27017/testdb
+      JWT_SECRET: fake_secret_test_only
+
+    steps:
+      - name: 🔄 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 📦 Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📥 Instalar dependências
+        run: npm install
+
+      - name: 🧪 Rodar testes com cobertura
+        run: |
+          npm run test -- --coverage --coverageReporters=text-summary > coverage.txt
+          cat coverage.txt
+
+      - name: ✅ Verificar cobertura mínima
+        run: |
+          COVERAGE=$(grep -Po 'All files[^|]*\|\s*\K\d+' coverage.txt | head -1)
+          echo "Cobertura total: $COVERAGE%"
+          if [ "$COVERAGE" -lt 20 ]; then
+            echo "❌ Cobertura abaixo de 20%"
+            exit 1
+          else
+            echo "✅ Cobertura aceitável"
+          fi
