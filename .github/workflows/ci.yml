@@ -56,3 +56,5 @@ jobs:
           else
             echo "✅ Cobertura aceitável"
           fi
+      - name: Run mutation tests
+        run: npx stryker run
