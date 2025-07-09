@@ -23,8 +23,8 @@ jobs:
 
     env:
       PORT: 3000
-      MONGO_URI_DOCKER: mongodb://localhost:27017/testdb
-      JWT_SECRET: fake_secret_test_only
+      MONGO_URI_PROD: ${{ secrets.MONGO_URI_PROD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - name: Checkout do código
@@ -40,7 +40,7 @@ jobs:
 
       - name: Garantir permissão de execução para jest
         run: chmod +x ./node_modules/.bin/jest
-        
+
       - name: Rodar testes com cobertura
         run: |
           npx jest --coverage --coverageReporters=text-summary > coverage.txt
