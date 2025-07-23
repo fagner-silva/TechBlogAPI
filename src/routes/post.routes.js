@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { listarPostPorId, listarPosts,criarPost, atualizarPost, deletarPost, buscarPosts } = require('../controllers/post.controller');
+const { listarPostPorId, listarPostsAluno, listarPostsProfessor,criarPost, atualizarPost, deletarPost, buscarPosts, inativarPost } = require('../controllers/post.controller');
 const autenticarToken = require('../middlewares/authMiddleware');
+
 /**
  * @swagger
  * tags:
@@ -27,6 +28,19 @@ const autenticarToken = require('../middlewares/authMiddleware');
  *         description: Lista de posts filtrados
  */
 router.get('/posts/search', buscarPosts);
+
+/**
+ * @swagger
+ * /posts/all:
+ *   get:
+ *     summary: Lista todos os posts (Público Geral)
+ *     tags: [Posts]
+ *     responses:
+ *       200:
+ *         description: Lista de posts retornada com sucesso
+ */
+router.get('/posts/all', listarPostsAluno);
+
 /**
  * @swagger
  * /posts/{id}:
@@ -48,17 +62,20 @@ router.get('/posts/search', buscarPosts);
  */
 router.get('/posts/:id', listarPostPorId);
 
+
+
+
 /**
  * @swagger
  * /posts:
  *   get:
- *     summary: Lista todos os posts
+ *     summary: Lista todos os posts (Professor)
  *     tags: [Posts]
  *     responses:
  *       200:
  *         description: Lista de posts retornada com sucesso
  */
-router.get('/posts', listarPosts);
+router.get('/posts', autenticarToken, listarPostsProfessor);
 
 /**
  * @swagger
@@ -92,6 +109,29 @@ router.get('/posts', listarPosts);
  *         description: Dados inválidos
  */
 router.post('/posts', autenticarToken,criarPost);
+
+/**
+ * @swagger
+ * /posts/{id}/inativar:
+ *   put:
+ *     summary: Inativar um post pelo ID
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do post a ser inativado
+ *     responses:
+ *       200:
+ *         description: Post inativado com sucesso
+ *       404:
+ *         description: Post não encontrado
+ */
+router.put('/posts/:id/inativar', autenticarToken, inativarPost);
 
 /**
  * @swagger
@@ -151,6 +191,8 @@ router.put('/posts/:id', autenticarToken, atualizarPost);
  *         description: Post não encontrado
  */
 router.delete('/posts/:id', autenticarToken,deletarPost);
+
+
 
 
 module.exports = router;

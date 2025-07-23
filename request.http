@@ -36,3 +36,10 @@ DELETE http://localhost:3000/api/posts/685df85d9dbf484cf41f5f58
 GET http://localhost:3000/api/posts/search?query=Sucesso
 
 ###
+
+
+
+curl --request PUT \
+  --url https://techblogapi-m8yz.onrender.com/api/posts/687c0ee55ac3d38634dec55e/inativar \
+  --header 'Authorization: Bearer SEU_TOKEN_AQUI' \
+  --header 'Content-Type: application/json'

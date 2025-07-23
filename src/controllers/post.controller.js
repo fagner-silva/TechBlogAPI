@@ -1,4 +1,5 @@
-const { getPostId, getAllPosts, createPost, deletePost, updatePost, searchPosts } = require('../services/post.service');
+const Post = require('../models/post.model');
+const { getPostId, getAllPosts, createPost, deletePost, inactivatePost, updatePost, searchPosts,  } = require('../services/post.service');
 
 async function listarPostPorId(req, res) {
     try {
@@ -15,15 +16,22 @@ async function listarPostPorId(req, res) {
     }
 }
 
+async function listarPostsAluno(req, res) {
+  try {
+    const posts = await Post.find({ status: 'ativo' }).sort({ criadoEm: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json(erros.POST_ERRO_BUSCAR);
+  }
+}
 
-async function listarPosts(req, res) {
-    try {
-        const posts = await getAllPosts();
-        res.status(200).json(posts);
-    } catch (error) {
-        console.error('Erro ao buscar posts:', error.message);
-        res.status(500).json(erros.POST_ERRO_LISTAR);
-    }
+async function listarPostsProfessor(req, res) {
+  try {
+    const posts = await Post.find().sort({ criadoEm: -1 });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json(erros.POST_ERRO_BUSCAR);
+  }
 }
 
 async function criarPost(req, res) {
@@ -67,6 +75,20 @@ async function deletarPost(req, res) {
     }
 }
 
+async function inativarPost(req, res) {
+    try {
+        const { id } = req.params;
+        const post = await inactivatePost(id);
+        if (!post) {
+            return res.status(404).json({ message: 'Post não encontrado' });
+        }
+        res.status(200).json({ message: 'Post inativado com sucesso' });
+    } catch (error) {
+        console.error('Erro ao inativar post:', error.message);
+        res.status(500).json({ message: 'Erro ao inativar post' });
+    }
+}
+
 async function buscarPosts(req, res) {
     try {
         const { query } = req.query;
@@ -84,10 +106,12 @@ async function buscarPosts(req, res) {
 }
 
 module.exports = {
-    listarPosts,
+    listarPostsAluno,
+    listarPostsProfessor,
     criarPost,
     atualizarPost,
     deletarPost,
+    inativarPost,
     buscarPosts,
     listarPostPorId
 };

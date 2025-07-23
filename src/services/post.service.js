@@ -66,6 +66,15 @@ async function deletePost(id) {
     }
 }
 
+async function inactivatePost(id) {
+    try {
+        return await Post.findByIdAndUpdate(id, { status: 'inativo' }, { new: true });
+    } catch (error) {
+        console.error('Erro ao inativar post:', error.message);
+        throw error;
+    }
+}
+
 async function searchPosts(termo){
     try{
         const regex = new RegExp(termo, 'i');
@@ -89,5 +98,6 @@ module.exports = {
     createPost,
     updatePost,
     deletePost,
+    inactivatePost,
     searchPosts
 };
