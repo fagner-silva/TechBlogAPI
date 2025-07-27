@@ -1,5 +1,5 @@
 ### GET - Listar todos os posts
-GET https://techblogapi-m8yz.onrender.com/api/posts
+GET http://localhost:3000/api/posts
 Content-Type: application/json
 
 ###
