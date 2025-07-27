@@ -79,12 +79,18 @@ jobs:
       - name: Esperar o container subir
         run: sleep 10
 
-      - name: Testar se a API está no ar
+      - name: Verificar se a API está no ar
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/posts/all || echo "000")
-          if [ "$STATUS" = "200" ] || [ "$STATUS" = "401" ]; then
-            echo "✅ API no ar com Docker (código $STATUS)"
-          else
-            echo "❌ Erro ao subir API (código $STATUS)"
-            exit 1
-          fi
+          echo "⏳ Aguardando API iniciar..."
+          for i in {1..20}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/posts/all || echo "000")
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "401" ]; then
+              echo "✅ API no ar com Docker (código $STATUS)"
+              exit 0
+            fi
+            echo "Tentativa $i: Aguardando..."
+            sleep 2
+          done
+          echo "❌ Erro ao subir API (último código: $STATUS)"
+          docker logs minha-api-container || true
+          exit 1
