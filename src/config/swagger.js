@@ -1,4 +1,5 @@
 const SwaggerJSDoc = require('swagger-jsdoc');
+const isProd = process.env.NODE_ENV === 'production';
 
 const options = {
     definition: {
@@ -10,7 +11,10 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000/api',
+                url: isProd
+                    ? 'https://techblogapi-m8yz.onrender.com/api'
+                    : 'http://localhost:3000/api',
+                description: isProd ? 'Produção' : 'Desenvolvimento',
             },
         ],
         components: {
@@ -28,7 +32,7 @@ const options = {
             },
         ],
     },
-    apis: ['./src/routes/*.js', './src/controllers/*.js'], 
+    apis: ['./src/routes/*.js', './src/controllers/*.js'],
 };
 
 const swaggerSpec = SwaggerJSDoc(options);
