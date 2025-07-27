@@ -29,7 +29,7 @@ Atualmente, muitos professores da rede pública não têm acesso a plataformas m
 
 ## 🔁 Fluxograma do sistema
 
-![Fluxograma do sistema](https://raw.githubusercontent.com/usuario/repositorio/main/imagens/fluxograma.png)
+![Fluxograma do sistema](https://i.ibb.co/8gyZtsLy/fluxograma.png)
 
 ---
 
