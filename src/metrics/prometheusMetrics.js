@@ -11,7 +11,7 @@ const httpRequestCounter = new client.Counter({
 
 function contarRequisicao(req, res, next) {
     res.on('finish', () => {
-      httpRequestCounter.labels(req.method, req.path, res.statusCode).inc();
+      httpRequestCounter.labels(req.method, req.route?.path || req.originalUrl, res.statusCode).inc();
     });
     next();
 }
