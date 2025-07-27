@@ -45,7 +45,7 @@ router.get('/posts/all', listarPostsAluno);
  *     tags: [Aluno]
  *     parameters:
  *       - in: query
- *         name: termo
+ *         name: query
  *         required: true
  *         schema:
  *           type: string
