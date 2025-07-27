@@ -8,7 +8,7 @@ Atualmente, muitos professores da rede pública não têm acesso a plataformas m
 
 ## 🗂️ Diagrama de Arquitetura
 
-![Fluxograma](docs/fluxograma.png)
+![Fluxograma](https://i.ibb.co/8gyZtsLy/fluxograma.png)
 
 **Descrição:**
 - O usuário faz uma requisição para a API (via front ou Swagger).
@@ -24,12 +24,6 @@ Atualmente, muitos professores da rede pública não têm acesso a plataformas m
 2. Professor (autenticado) acessa `/posts` para ver todos os posts.
 3. Professores podem criar, editar, deletar e inativar posts.
 4. Qualquer usuário pode buscar posts por palavra-chave.
-
----
-
-## 🔁 Fluxograma do sistema
-
-![Fluxograma do sistema](https://i.ibb.co/8gyZtsLy/fluxograma.png)
 
 ---
 
