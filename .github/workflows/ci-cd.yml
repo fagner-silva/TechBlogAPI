@@ -46,8 +46,6 @@ jobs:
           npx jest --coverage --coverageReporters=text-summary > coverage.txt
           cat coverage.txt
 
-      - name: Verificar cobertura mínima
-        run: |
           COVERAGE=$(grep -Po 'All files[^|]*\|\s*\K\d+' coverage.txt | head -1)
           echo "Cobertura total: $COVERAGE%"
           if [ "$COVERAGE" -lt 20 ]; then
@@ -63,10 +61,22 @@ jobs:
           npx stryker run
 
       - name: Subir container da API e verificar se está no ar
+        env:
+          MONGO_URI_PROD: ${{ secrets.MONGO_URI_PROD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
+          echo "Iniciando container com variáveis de ambiente..."
+          echo "MONGO_URI_PROD=${MONGO_URI_PROD:0:10}..." # só os 10 primeiros chars p/ debug sem vazar
+          echo "JWT_SECRET=${JWT_SECRET:0:5}..."
+
           docker build -t techblog-api .
-          docker run -d -p 3000:3000 --name api-container -e MONGO_URI_PROD=${{ secrets.MONGO_URI_PROD }} -e JWT_SECRET=${{ secrets.JWT_SECRET }} techblog-api
-          sleep 10 # aguarda subir
+
+          docker run -d -p 3000:3000 --name api-container \
+            -e MONGO_URI_PROD="$MONGO_URI_PROD" \
+            -e JWT_SECRET="$JWT_SECRET" \
+            techblog-api
+
+          sleep 10
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/posts/all || echo "000")
           if [ "$STATUS" = "200" ] || [ "$STATUS" = "401" ]; then
             echo "✅ API no ar com Docker (código $STATUS)"
