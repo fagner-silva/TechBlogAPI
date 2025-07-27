@@ -75,9 +75,9 @@ async function inactivatePost(id) {
     }
 }
 
-async function searchPosts(termo){
+async function searchPosts(query){
     try{
-        const regex = new RegExp(termo, 'i');
+        const regex = new RegExp(query, 'i');
         const posts = await Post.find({
             $or: [
                 { titulo: regex },
