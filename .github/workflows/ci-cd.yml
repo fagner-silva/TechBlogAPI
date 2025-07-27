@@ -46,7 +46,7 @@ jobs:
           npx jest --coverage --coverageReporters=text-summary > coverage.txt
           cat coverage.txt
 
-          COVERAGE=$(grep -Po 'All files[^|]*\|\s*\K\d+' coverage.txt | head -1)
+          COVERAGE=$(grep -Po '^Statements\s*:\s*\K[0-9]+' coverage.txt)
           echo "Cobertura total: $COVERAGE%"
           if [ "$COVERAGE" -lt 20 ]; then
             echo "❌ Cobertura abaixo de 20%"
@@ -60,35 +60,42 @@ jobs:
           chmod +x ./node_modules/.bin/stryker
           npx stryker run
 
-      - name: Subir container da API e verificar se está no ar
-        env:
-          MONGO_URI_PROD: ${{ secrets.MONGO_URI_PROD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - name: Verificar versão do Docker
+        run: docker --version
+
+      - name: Build da imagem Docker
+        run: docker build -t techblog-api .
+
+      - name: Subir container da API
         run: |
-          echo "Iniciando container com variáveis de ambiente..."
-          echo "MONGO_URI_PROD=${MONGO_URI_PROD:0:10}..." # só os 10 primeiros chars p/ debug sem vazar
-          echo "JWT_SECRET=${JWT_SECRET:0:5}..."
-
-          docker build -t techblog-api .
-
-          docker run -d -p 3000:3000 --name api-container \
-            -e MONGO_URI_PROD="$MONGO_URI_PROD" \
-            -e JWT_SECRET="$JWT_SECRET" \
+          docker run -d -p 3000:3000 \
+            -e MONGO_URI_PROD=${{ secrets.MONGO_URI_PROD }} \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            --name techblog-api \
             techblog-api
 
-          sleep 10
+      - name: Verificar se API está no ar
+        run: |
+          sleep 5
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/posts/all || echo "000")
+          echo "Código retornado: $STATUS"
           if [ "$STATUS" = "200" ] || [ "$STATUS" = "401" ]; then
             echo "✅ API no ar com Docker (código $STATUS)"
           else
             echo "❌ Erro ao subir API (código $STATUS)"
-            docker logs api-container
+            docker logs techblog-api
             exit 1
           fi
 
+      - name: Limpeza do container
+        if: always()
+        run: |
+          docker stop techblog-api || true
+          docker rm techblog-api || true
+
   deploy:
     runs-on: ubuntu-latest
-    needs: test 
+    needs: test
 
     steps:
       - name: Trigger Render Deploy
