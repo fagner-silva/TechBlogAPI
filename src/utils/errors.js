@@ -23,4 +23,5 @@ module.exports = {
   // Token
   TOKEN_NAO_FORNECIDO: { code: 'AUTH01', message: 'Token de autenticação não fornecido' },
   TOKEN_INVALIDO: { code: 'AUTH02', message: 'Token inválido ou expirado' },
+  ACESSO_NEGADO: { code: 'AUTH03', message: 'Acesso negado' },
 };

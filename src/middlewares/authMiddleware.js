@@ -20,4 +20,16 @@ function autenticarToken(req, res, next) {
     });
 }
 
+function autorizarPerfis(...perfisPermitidos) {
+    return (req, res, next) => {
+        const { usuario } = req;
+        if (!usuario || !usuario.perfil || !perfisPermitidos.includes(usuario.perfil)) {
+            const erros = require('../utils/errors');
+            return res.status(403).json(erros.ACESSO_NEGADO);
+        }
+        next();
+    };
+}
+
 module.exports = autenticarToken;
+module.exports.autorizarPerfis = autorizarPerfis;

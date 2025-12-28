@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { registrar, autenticar } = require('../controllers/auth.controller');
+const { registrar, autenticar, listar } = require('../controllers/auth.controller');
+const autenticarToken = require('../middlewares/authMiddleware');
+const { autorizarPerfis } = require('../middlewares/authMiddleware');
 
 /**
  * @swagger
@@ -35,7 +37,7 @@ const { registrar, autenticar } = require('../controllers/auth.controller');
  *                 type: string
  *               perfil:
  *                 type: string
- *                 enum: [admin, professor, reitor]
+ *                 enum: [admin, professor, reitor, aluno]
  *     responses:
  *       201:
  *         description: Usuário registrado com sucesso
@@ -79,5 +81,30 @@ router.post('/registrar', registrar);
  *         description: Erro interno
  */
 router.post('/login', autenticar);
+
+/**
+ * @swagger
+ * /auth/users:
+ *   get:
+ *     summary: Lista todos os usuários (Admin/Professor/Reitor)
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: perfil
+ *         schema:
+ *           type: string
+ *           enum: [professor, aluno]
+ *         description: Filtra por perfil (opcional)
+ *     responses:
+ *       200:
+ *         description: Lista de usuários retornada com sucesso
+ *       400:
+ *         description: Parâmetro inválido
+ *       403:
+ *         description: Acesso negado
+ */
+router.get('/users', autenticarToken, autorizarPerfis('admin', 'professor', 'reitor'), listar);
 
 module.exports = router;

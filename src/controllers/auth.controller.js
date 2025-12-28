@@ -1,6 +1,8 @@
 const { registrarUsuario,autenticarUsuario } = require('../services/auth.service');
 const erros = require('../utils/errors');
 
+const { listarUsuarios } = require('../services/auth.service');
+
 async function registrar(req, res) {
     try {
         const { nome, email, senha, perfil } = req.body;
@@ -39,3 +41,19 @@ module.exports = {
     registrar,
     autenticar
 };
+
+async function listar(req, res) {
+    try {
+        const perfilFiltro = req.query.perfil;
+        if (perfilFiltro && !['professor', 'aluno'].includes(perfilFiltro)) {
+            return res.status(400).json({ code: 'ERROR_PARAM', message: 'Perfil inválido para filtro' });
+        }
+        const usuarios = await listarUsuarios({ perfil: perfilFiltro });
+        return res.status(200).json(usuarios);
+    } catch (error) {
+        console.error('Erro ao listar usuários:', error.message);
+        return res.status(500).json(erros.ERRO_INTERNO);
+    }
+}
+
+module.exports.listar = listar;

@@ -52,9 +52,16 @@ async function autenticarTokenOpcional(req, res, next) {
     next(); 
   });
 }
+async function listarUsuarios({ perfil } = {}) {
+    const query = {};
+    if (perfil) query.perfil = perfil;
+    const usuarios = await User.find(query).select('-senha');
+    return usuarios;
+}
 
 module.exports = {
     registrarUsuario,
     autenticarUsuario,
-    autenticarTokenOpcional
+    autenticarTokenOpcional,
+    listarUsuarios
 };
