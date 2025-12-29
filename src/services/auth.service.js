@@ -65,3 +65,18 @@ module.exports = {
     autenticarTokenOpcional,
     listarUsuarios
 };
+
+async function atualizarUsuario(id, { nome, email, senha }) {
+    const update = {};
+    if (nome) update.nome = nome;
+    if (email) update.email = email;
+    if (senha) {
+        const senhaCriptografada = await bcrypt.hash(senha, SALT_ROUNDS);
+        update.senha = senhaCriptografada;
+    }
+
+    const usuarioAtualizado = await User.findByIdAndUpdate(id, update, { new: true, runValidators: true }).select('-senha');
+    return usuarioAtualizado;
+}
+
+module.exports.atualizarUsuario = atualizarUsuario;

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registrar, autenticar, listar } = require('../controllers/auth.controller');
+const { registrar, autenticar, listar, atualizar } = require('../controllers/auth.controller');
 const autenticarToken = require('../middlewares/authMiddleware');
 const { autorizarPerfis } = require('../middlewares/authMiddleware');
 
@@ -106,5 +106,45 @@ router.post('/login', autenticar);
  *         description: Acesso negado
  */
 router.get('/users', autenticarToken, autorizarPerfis('admin', 'professor', 'reitor'), listar);
+
+/**
+ * @swagger
+ * /auth/users/{id}:
+ *   patch:
+ *     summary: Atualiza dados do usuário (nome, email, senha). Perfil não pode ser alterado.
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do usuário a ser atualizado
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               senha:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuário atualizado com sucesso
+ *       400:
+ *         description: Dados inválidos ou tentativa de alterar perfil
+ *       403:
+ *         description: Acesso negado
+ *       404:
+ *         description: Usuário não encontrado
+ */
+router.patch('/users/:id', autenticarToken, autorizarPerfis('admin', 'professor', 'reitor'), atualizar);
 
 module.exports = router;
