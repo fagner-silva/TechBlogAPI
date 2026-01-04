@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registrar, autenticar, listar, atualizar } = require('../controllers/auth.controller');
+const { registrar, autenticar, listar, atualizar, deletar } = require('../controllers/auth.controller');
 const autenticarToken = require('../middlewares/authMiddleware');
 const { autorizarPerfis } = require('../middlewares/authMiddleware');
 
@@ -111,7 +111,7 @@ router.get('/users', autenticarToken, autorizarPerfis('admin', 'professor', 'rei
  * @swagger
  * /auth/users/{id}:
  *   patch:
- *     summary: Atualiza dados do usuário (nome, email, senha). Perfil não pode ser alterado.
+ *     summary: Atualiza dados do usuário (nome, email, senha). Perfil não pode ser alterado. (Apenas Professores)
  *     tags: [Autenticação]
  *     security:
  *       - bearerAuth: []
@@ -141,10 +141,32 @@ router.get('/users', autenticarToken, autorizarPerfis('admin', 'professor', 'rei
  *       400:
  *         description: Dados inválidos ou tentativa de alterar perfil
  *       403:
+ *         description: Acesso negado (apenas usuários com perfil 'professor' podem editar)
+ *       404:
+ *         description: Usuário não encontrado
+ *   delete:
+ *     summary: Remove usuário (hard delete)
+ *     tags: [Autenticação]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID do usuário a ser removido
+ *     responses:
+ *       200:
+ *         description: Usuário deletado com sucesso
+ *       403:
  *         description: Acesso negado
  *       404:
  *         description: Usuário não encontrado
  */
-router.patch('/users/:id', autenticarToken, autorizarPerfis('admin', 'professor', 'reitor'), atualizar);
+// Apenas professores podem editar usuários via essa rota
+router.patch('/users/:id', autenticarToken, autorizarPerfis('professor'), atualizar);
+router.delete('/users/:id', autenticarToken, autorizarPerfis('admin', 'professor', 'reitor'), deletar);
+
 
 module.exports = router;

@@ -80,3 +80,10 @@ async function atualizarUsuario(id, { nome, email, senha }) {
 }
 
 module.exports.atualizarUsuario = atualizarUsuario;
+
+async function deletarUsuario(id) {
+    const usuarioDeletado = await User.findByIdAndDelete(id);
+    return usuarioDeletado;
+}
+
+module.exports.deletarUsuario = deletarUsuario;

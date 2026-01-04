@@ -3,6 +3,7 @@ const erros = require('../utils/errors');
 
 const { listarUsuarios } = require('../services/auth.service');
 const { atualizarUsuario } = require('../services/auth.service');
+const { deletarUsuario } = require('../services/auth.service');
 
 async function registrar(req, res) {
     try {
@@ -86,3 +87,17 @@ async function atualizar(req, res) {
 }
 
 module.exports.atualizar = atualizar;
+
+async function deletar(req, res) {
+    try {
+        const { id } = req.params;
+        const usuarioDeletado = await deletarUsuario(id);
+        if (!usuarioDeletado) return res.status(404).json(erros.USUARIO_NAO_ENCONTRADO);
+        return res.status(200).json({ message: 'Usuário deletado com sucesso' });
+    } catch (error) {
+        console.error('Erro ao deletar usuário:', error.message);
+        return res.status(500).json(erros.ERRO_INTERNO);
+    }
+}
+
+module.exports.deletar = deletar;
